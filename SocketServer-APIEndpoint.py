@@ -13,15 +13,15 @@ def SendToApi(scan_json):
     print(scan_json)
 
     # Send the measurement as JSON in the request body
-    headers = {'Content-Type': 'application/json'}
-    response = requests.post(api_url, data=scan_json, headers=headers)
-    print(response.text)
+    #headers = {'Content-Type': 'application/json'}
+    #response = requests.post(api_url, data=scan_json, headers=headers)
+    #print(response.text)
 
-    if response.status_code == 201:
-        print("Scan sent successfully")
-    else:
-        print(f"Failed to send scan. Status code: {response.status_code}")
-    return scan_json
+    #if response.status_code == 201:
+    #    print("Scan sent successfully")
+    #else:
+    #    print(f"Failed to send scan. Status code: {response.status_code}")
+    #return scan_json
 
 def runserver():
     serverPort = 12000  # Port number
