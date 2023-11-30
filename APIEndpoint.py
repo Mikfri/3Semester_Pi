@@ -4,13 +4,15 @@ import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
 import time
 from datetime import datetime
+import requests
+
 
 reader = SimpleMFRC522()
 
-class Scan: # class for scan object
+class CardData: # class for scan object
     def __init__(self, id, time):
-        self.id = id
-        self.time = time
+        self.cardNumber = id
+        self.unixTime = time
     
     def __str__(self):
         return "\nID: " + str(self.id) + "\nTime: " + self.time
@@ -18,8 +20,8 @@ class Scan: # class for scan object
 def takeScan():
     try:
         id, _ = reader.read()  # read card, ignore text
-        current_time = datetime.now().isoformat()  # get current datetime
-        scan = Scan(id, current_time)  # create object
+        current_time = int(time.time())  # get current datetime
+        scan = CardData(id, current_time)  # create object
         JSONSubmission = json.dumps(scan.__dict__)  # convert object to JSON
         print("Sent:", JSONSubmission) # print JSON
         SendToApi(JSONSubmission)  # send object to server
@@ -29,13 +31,15 @@ def takeScan():
 def SendToApi(scan_json):    
     print("______________________")
     
-    api_url = "api url here"  # API URL
+    api_url = "https://zealandconnect.azurewebsites.net/api/Card/"  # API URL
     
     print(scan_json)
 
     # Send the measurement as JSON in the request body
     headers = {'Content-Type': 'application/json'} # set headers
-    response = requests.post(api_url, data=scan_json, headers=headers) # send request
+    print("Before sending request")
+    response = requests.post(api_url, json=scan_json, headers=headers)
+    print("After sending request")
     print(response.text) # print response
 
     if response.status_code == 201: # check if response is OK
